@@ -560,7 +560,7 @@ function Onboarding({ onComplete }: { onComplete: (name: string) => void }) {
           </span>
           <span>Keeper</span>
         </div>
-        <h1>Build a private memory system for loving better.</h1>
+        <h1>Love Better</h1>
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -569,7 +569,7 @@ function Onboarding({ onComplete }: { onComplete: (name: string) => void }) {
             }
           }}
         >
-          <label htmlFor="girlfriend-name">Her name</label>
+          <label htmlFor="girlfriend-name">Your Partner&apos;s Name</label>
           <div className="onboarding-input">
             <input
               id="girlfriend-name"
