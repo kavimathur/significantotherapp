@@ -1,4 +1,4 @@
-const CACHE_NAME = "keeper-shell-v1";
+const CACHE_NAME = "keeper-shell-v2";
 const SHELL_ASSETS = [
   "/",
   "/index.html",
@@ -8,7 +8,18 @@ const SHELL_ASSETS = [
   "/icon-512.png",
   "/apple-touch-icon.png",
   "/apple-touch-icon-180.png",
+  "/pastel-flower-bg.png",
 ];
+const SHELL_ASSET_SET = new Set(SHELL_ASSETS);
+
+function shouldCache(request) {
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) {
+    return false;
+  }
+
+  return SHELL_ASSET_SET.has(url.pathname) || url.pathname.startsWith("/assets/");
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -48,6 +59,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  if (!shouldCache(request)) {
+    return;
+  }
+
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) {
@@ -55,7 +70,7 @@ self.addEventListener("fetch", (event) => {
       }
 
       return fetch(request).then((response) => {
-        if (response.ok && new URL(request.url).origin === self.location.origin) {
+        if (response.ok) {
           const copy = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
         }

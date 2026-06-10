@@ -1,23 +1,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,750&family=Spline+Sans:wght@400;500;600;700&display=swap");
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   font-family: "Spline Sans", ui-sans-serif, system-ui, sans-serif;
-  background: #12120f;
-  color: #fff2dc;
-  --ink: #12120f;
-  --paper: #fff2dc;
-  --paper-soft: #f8e8c7;
-  --clay: #ff7a66;
-  --mint: #4bd6bc;
-  --citron: #c7f05a;
-  --gold: #ffd166;
-  --rose: #f8b4d9;
-  --line: rgba(255, 242, 220, 0.14);
-  --line-strong: rgba(255, 242, 220, 0.28);
-  --glass: rgba(26, 26, 21, 0.74);
-  --glass-solid: #1a1a15;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+  background: #d9e5e9;
+  color: #34464a;
+  --ink: #34464a;
+  --paper: #fffaf0;
+  --paper-soft: #fff1d5;
+  --clay: #eaa0aa;
+  --mint: #a8d3c1;
+  --citron: #c4d789;
+  --gold: #edca78;
+  --rose: #f3c4ce;
+  --line: rgba(67, 82, 77, 0.16);
+  --line-strong: rgba(67, 82, 77, 0.28);
+  --glass: rgba(255, 250, 240, 0.74);
+  --glass-solid: #fffaf0;
+  --shadow: 0 24px 80px rgba(70, 91, 90, 0.22);
+  --muted: rgba(52, 70, 74, 0.64);
+  --surface: rgba(255, 250, 240, 0.74);
+  --surface-strong: rgba(255, 250, 240, 0.9);
 }
 
 * {
@@ -26,7 +29,7 @@
 
 html {
   min-height: 100%;
-  background: #12120f;
+  background: #d9e5e9;
 }
 
 body {
@@ -1300,5 +1303,343 @@ button:disabled {
 
   .sheet {
     border-radius: 24px;
+  }
+}
+
+/* Pastel flower theme */
+body::before {
+  background:
+    linear-gradient(180deg, rgba(255, 250, 240, 0.2), rgba(217, 229, 233, 0.34)),
+    url("/pastel-flower-bg.png") center / cover no-repeat fixed;
+}
+
+body::after {
+  opacity: 0.2;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(255, 250, 230, 0.42), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(208, 224, 225, 0.36));
+  mix-blend-mode: normal;
+}
+
+.app-background {
+  color: var(--ink);
+}
+
+.desktop-rail,
+.app-main,
+.bottom-nav,
+.onboarding-card,
+.sheet,
+.install-coachmark {
+  border-color: var(--line);
+  background: rgba(255, 250, 240, 0.68);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(24px) saturate(1.08);
+}
+
+.app-main {
+  background:
+    linear-gradient(180deg, rgba(255, 250, 240, 0.72), rgba(255, 246, 230, 0.64)),
+    url("/pastel-flower-bg.png") center / cover no-repeat;
+}
+
+.screen-panel {
+  background: linear-gradient(180deg, rgba(255, 250, 240, 0.22), rgba(217, 229, 233, 0.18));
+}
+
+.topbar {
+  border-bottom-color: var(--line);
+  background: rgba(255, 250, 240, 0.56);
+}
+
+.brand-lockup,
+.topbar h1,
+.onboarding h1,
+.sheet h2,
+.detail-header h2,
+.idea-copy h2,
+.hero-rec h2,
+.empty-state h2 {
+  color: #2f4549;
+}
+
+.eyebrow,
+.context-pill,
+.detail-header p,
+.muted,
+.context-details,
+.idea-copy p,
+.hero-rec p,
+.rec-card p,
+.empty-state p,
+.install-coachmark p,
+.entry-list small,
+.person-note span {
+  color: var(--muted);
+}
+
+.brand-mark,
+.empty-state > div {
+  color: #334649;
+  border-color: rgba(255, 255, 255, 0.6);
+  background:
+    linear-gradient(135deg, rgba(255, 250, 240, 0.92), rgba(246, 205, 213, 0.9) 47%, rgba(168, 211, 193, 0.9)),
+    var(--paper);
+  box-shadow: 0 18px 42px rgba(118, 145, 139, 0.22);
+}
+
+.rail-button {
+  color: rgba(52, 70, 74, 0.56);
+}
+
+.rail-button:hover,
+.rail-button.is-active,
+.bottom-nav button.is-active {
+  color: #34464a;
+  background: rgba(255, 250, 240, 0.92);
+  box-shadow: 0 10px 28px rgba(92, 116, 110, 0.14);
+}
+
+.context-pill,
+.quick-prompts button,
+.composer,
+.context-details,
+.segmented,
+.inline-preview {
+  border-color: var(--line);
+  background: rgba(255, 250, 240, 0.56);
+}
+
+.icon-button {
+  color: #34464a;
+  background: rgba(255, 250, 240, 0.9);
+}
+
+.icon-button.ghost {
+  color: #52665e;
+  background: rgba(255, 250, 240, 0.54);
+}
+
+.icon-button.ghost:hover {
+  background: rgba(255, 250, 240, 0.82);
+}
+
+.icon-button.danger {
+  color: #b36b75;
+}
+
+.add-button,
+.primary-action,
+.composer button,
+.mini-form button,
+.onboarding-input button,
+.input-with-button button,
+.empty-state button,
+.rec-actions button {
+  color: #34464a;
+  background: linear-gradient(135deg, #fff5cf, #f3c4ce 58%, #a8d3c1);
+  box-shadow: 0 12px 28px rgba(103, 132, 127, 0.18);
+}
+
+.rec-actions button:nth-child(2) {
+  background: linear-gradient(135deg, #dfeec0, #a8d3c1);
+}
+
+.onboarding {
+  background:
+    linear-gradient(180deg, rgba(255, 250, 240, 0.12), rgba(205, 223, 226, 0.24)),
+    url("/pastel-flower-bg.png") center / cover no-repeat fixed;
+}
+
+.onboarding-card {
+  background: rgba(255, 250, 240, 0.66);
+}
+
+.onboarding label,
+.sheet-form label,
+.idea-kind,
+.rec-category,
+.rec-card span {
+  color: rgba(67, 92, 83, 0.72);
+}
+
+.onboarding input,
+.sheet-form input,
+.sheet-form textarea,
+.mini-form input,
+.composer textarea,
+.editor input,
+.editor textarea {
+  border-color: rgba(67, 82, 77, 0.18);
+  color: #34464a;
+  background: rgba(255, 250, 240, 0.72);
+}
+
+.onboarding input::placeholder,
+.sheet-form input::placeholder,
+.sheet-form textarea::placeholder,
+.mini-form input::placeholder,
+.composer textarea::placeholder,
+.editor input::placeholder,
+.editor textarea::placeholder {
+  color: rgba(52, 70, 74, 0.4);
+}
+
+.onboarding input:focus,
+.sheet-form input:focus,
+.sheet-form textarea:focus,
+.mini-form input:focus,
+.composer textarea:focus,
+.editor input:focus,
+.editor textarea:focus {
+  border-color: rgba(137, 166, 105, 0.68);
+  background: rgba(255, 253, 247, 0.92);
+}
+
+.chat-bubble {
+  color: #34464a;
+  border-color: var(--line);
+  background: rgba(255, 250, 240, 0.66);
+}
+
+.chat-bubble.user {
+  color: #34464a;
+  background: linear-gradient(135deg, rgba(255, 245, 207, 0.95), rgba(245, 217, 176, 0.9));
+}
+
+.quick-prompts button,
+.segmented button,
+.entry-list button,
+.bottom-nav button {
+  color: rgba(52, 70, 74, 0.6);
+}
+
+.segmented button.is-active,
+.entry-list button.is-active {
+  color: #34464a;
+  background: rgba(255, 250, 240, 0.94);
+}
+
+.person-bubble {
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 -18px 30px rgba(87, 105, 93, 0.12), 0 18px 42px rgba(88, 109, 105, 0.18);
+}
+
+.person-bubble:hover,
+.person-bubble.is-selected {
+  box-shadow: inset 0 -18px 30px rgba(87, 105, 93, 0.1), 0 28px 62px rgba(88, 109, 105, 0.24);
+}
+
+.person-bubble span {
+  color: #fffaf0;
+  background: rgba(52, 70, 74, 0.8);
+}
+
+.person-bubble small {
+  color: rgba(52, 70, 74, 0.74);
+}
+
+.detail-panel,
+.hero-rec,
+.rec-card,
+.idea-card,
+.editor,
+.entry-list,
+.empty-state {
+  border-color: var(--line);
+  background: rgba(255, 250, 240, 0.64);
+  box-shadow: 0 14px 46px rgba(89, 113, 108, 0.12);
+  backdrop-filter: blur(16px) saturate(1.08);
+}
+
+.person-note {
+  background: rgba(255, 250, 240, 0.58);
+}
+
+.idea-card.gift {
+  background:
+    linear-gradient(150deg, rgba(237, 202, 120, 0.24), transparent 42%),
+    rgba(255, 250, 240, 0.68);
+}
+
+.idea-card.date {
+  background:
+    linear-gradient(150deg, rgba(168, 211, 193, 0.32), transparent 42%),
+    rgba(255, 250, 240, 0.68);
+}
+
+.idea-sigil,
+.rec-icon {
+  color: #34464a;
+  background: rgba(255, 241, 213, 0.94);
+}
+
+.idea-copy a,
+.rec-card strong {
+  color: #7d852c;
+}
+
+.map-preview {
+  background: #d7e5e4;
+}
+
+.hero-rec {
+  color: #34464a;
+  background:
+    linear-gradient(145deg, rgba(255, 250, 240, 0.92), rgba(237, 202, 120, 0.58)),
+    rgba(255, 250, 240, 0.78);
+}
+
+.hero-rec .rec-category,
+.hero-rec p {
+  color: rgba(52, 70, 74, 0.7);
+}
+
+.hero-actions button {
+  color: #fffaf0;
+  background: #435c53;
+}
+
+.hero-actions .secondary {
+  color: #34464a;
+  background: rgba(255, 250, 240, 0.54);
+}
+
+.sheet-backdrop {
+  background: rgba(94, 115, 116, 0.34);
+}
+
+.sheet {
+  background: rgba(255, 250, 240, 0.9);
+}
+
+.swatches button.is-active {
+  border-color: #fffaf0;
+  box-shadow: 0 0 0 4px rgba(52, 70, 74, 0.14);
+}
+
+.toast {
+  color: #34464a;
+  background: rgba(255, 250, 240, 0.96);
+}
+
+.install-coachmark {
+  color: #34464a;
+  background: rgba(255, 250, 240, 0.9);
+}
+
+.install-icon {
+  color: #34464a;
+  background: linear-gradient(135deg, #fff5cf, #a8d3c1);
+}
+
+.install-coachmark button {
+  color: rgba(52, 70, 74, 0.72);
+  background: rgba(52, 70, 74, 0.08);
+}
+
+@media (max-width: 820px) {
+  .bottom-nav {
+    background: rgba(255, 250, 240, 0.82);
   }
 }
