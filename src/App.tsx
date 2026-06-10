@@ -1097,7 +1097,7 @@ function IdeaForm({
         mapQuery: data.mapQuery || fallback?.mapQuery || data.title || title || link,
       };
       setPreview(nextPreview);
-      if (!title.trim()) {
+      if (nextPreview.title && nextPreview.title !== "Saved map spot") {
         setTitle(nextPreview.title);
       }
     } catch {

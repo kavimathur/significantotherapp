@@ -18,6 +18,35 @@ function decodeHtml(value: string) {
     .replace(/&([a-z]+);/gi, (_, entity) => ENTITY_MAP[entity.toLowerCase()] ?? entity);
 }
 
+function decodeGoogleEscapes(value: string) {
+  return decodeHtml(value)
+    .replace(/\\u003d/g, "=")
+    .replace(/\\u0026/g, "&")
+    .replace(/\\u0027/g, "'")
+    .replace(/\\u002F/g, "/")
+    .replace(/\\\//g, "/");
+}
+
+function safeDecode(value: string) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+function cleanTitle(value: string) {
+  const decoded = safeDecode(decodeGoogleEscapes(value).replace(/\+/g, " "));
+  const cleaned = decoded
+    .replace(/\s+-\s+Google Maps$/i, "")
+    .replace(/^Google Maps$/i, "")
+    .replace(/@[-.\d,za-z]+.*/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return cleaned === "Google Maps" ? "" : cleaned;
+}
+
 function metaContent(html: string, property: string) {
   const patterns = [
     new RegExp(`<meta[^>]+property=["']${property}["'][^>]+content=["']([^"']+)["'][^>]*>`, "i"),
@@ -35,13 +64,14 @@ function metaContent(html: string, property: string) {
   return "";
 }
 
-function fallbackFromUrl(rawUrl: string) {
+function titleFromUrl(rawUrl: string) {
   try {
     const url = new URL(rawUrl);
     const queryParam = url.searchParams.get("q") ?? url.searchParams.get("query");
-    const placeMatch = url.pathname.match(/\/place\/([^/]+)/);
-    const extracted = queryParam ?? placeMatch?.[1] ?? "";
-    return decodeURIComponent(extracted.replace(/\+/g, " ")).replace(/@[-.\d,]+.*/, "").trim();
+    const placeMatch = url.pathname.match(/\/(?:maps\/)?place\/([^/@]+)/);
+    const directoryMatch = url.pathname.match(/\/maps\/dir\/(?:[^/]+\/)?([^/]+)/);
+    const extracted = queryParam ?? placeMatch?.[1] ?? directoryMatch?.[1] ?? "";
+    return cleanTitle(extracted);
   } catch {
     return "";
   }
@@ -60,6 +90,67 @@ function isAllowedUrl(rawUrl: string) {
   }
 }
 
+function previewPlaceUrl(html: string) {
+  const match = html.match(/<link[^>]+href=["']([^"']*\/maps\/preview\/place[^"']+)["']/i);
+  if (!match?.[1]) {
+    return "";
+  }
+
+  return new URL(decodeGoogleEscapes(match[1]), "https://www.google.com").toString();
+}
+
+function normalizeGooglePhoto(url: string) {
+  return url.replace(/=w\d+-h\d+[^?&]*/i, "=w900-h675-k-no");
+}
+
+function listingPhotoFromText(text: string) {
+  const decoded = decodeGoogleEscapes(text);
+  const urls = decoded.match(/https?:\/\/[^\s"'\\\],]+/g) ?? [];
+
+  const photo = urls.find((url) => {
+    const lower = url.toLowerCase();
+    return (
+      (lower.includes("lh3.googleusercontent.com") || lower.includes("lh3.ggpht.com")) &&
+      !lower.includes("streetview") &&
+      !lower.includes("staticmap") &&
+      !lower.includes("gstatic.com") &&
+      !lower.includes("/maps/vt")
+    );
+  });
+
+  return photo ? normalizeGooglePhoto(photo) : "";
+}
+
+async function fetchPlacePayload(html: string) {
+  const previewUrl = previewPlaceUrl(html);
+  if (!previewUrl) {
+    return null;
+  }
+
+  try {
+    const fetched = await fetch(previewUrl, {
+      headers: {
+        "user-agent": "Mozilla/5.0 KeeperPreview/1.0",
+        accept: "application/json,text/plain,*/*",
+      },
+      redirect: "follow",
+    });
+
+    if (!fetched.ok) {
+      return null;
+    }
+
+    const text = await fetched.text();
+
+    return {
+      title: titleFromUrl(previewUrl),
+      image: listingPhotoFromText(text),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export default async function handler(request: any, response: any) {
   const rawUrl = String(request.query?.url ?? "");
 
@@ -68,7 +159,7 @@ export default async function handler(request: any, response: any) {
     return;
   }
 
-  const fallbackTitle = fallbackFromUrl(rawUrl) || "Saved map spot";
+  const fallbackTitle = titleFromUrl(rawUrl) || "Saved map spot";
 
   try {
     const fetched = await fetch(rawUrl, {
@@ -79,9 +170,12 @@ export default async function handler(request: any, response: any) {
       redirect: "follow",
     });
     const html = await fetched.text();
-    const ogTitle = metaContent(html, "og:title").replace(/ - Google Maps$/i, "");
-    const image = metaContent(html, "og:image");
-    const title = ogTitle || fallbackTitle;
+    const placePayload = await fetchPlacePayload(html);
+    const resolvedTitle = titleFromUrl(fetched.url);
+    const ogTitle = cleanTitle(metaContent(html, "og:title"));
+    const htmlImage = listingPhotoFromText(html);
+    const title = placePayload?.title || resolvedTitle || ogTitle || fallbackTitle;
+    const image = placePayload?.image || htmlImage;
 
     const payload: JsonResponse = {
       title,

@@ -51,6 +51,7 @@ export interface NotebookEntry {
 export interface AppSettings {
   notificationsEnabled: boolean;
   lastNotificationAt?: string;
+  seedVersion?: number;
 }
 
 export interface AppState {
