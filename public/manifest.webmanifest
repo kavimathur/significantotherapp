@@ -1,6 +1,7 @@
 {
   "name": "Keeper",
   "short_name": "Keeper",
+  "id": "/",
   "description": "A private relationship memory system for thoughtful gestures, ideas, notes, and recommendations.",
   "start_url": "/",
   "scope": "/",

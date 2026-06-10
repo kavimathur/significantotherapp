@@ -1,5 +1,14 @@
 const CACHE_NAME = "keeper-shell-v1";
-const SHELL_ASSETS = ["/", "/index.html", "/manifest.webmanifest", "/icon.svg", "/icon-192.png", "/icon-512.png", "/apple-touch-icon.png"];
+const SHELL_ASSETS = [
+  "/",
+  "/index.html",
+  "/manifest.webmanifest",
+  "/icon.svg",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/apple-touch-icon.png",
+  "/apple-touch-icon-180.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

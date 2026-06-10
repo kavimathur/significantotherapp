@@ -17,6 +17,7 @@ import {
   Pencil,
   Plus,
   Send,
+  Share,
   Sparkles,
   Trash2,
   UserPlus,
@@ -56,6 +57,7 @@ function App() {
   const [selectedPersonId, setSelectedPersonId] = useState<string | null>(null);
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [toast, setToast] = useState<Toast | null>(null);
+  const showInstallCoachmark = useIosInstallCoachmark();
 
   const recommendations = useMemo(() => buildRecommendations(state), [state]);
   const contextDigest = useMemo(() => buildContextDigest(state), [state]);
@@ -464,6 +466,8 @@ function App() {
         <BottomNav activePage={activePage} onChange={setActivePage} />
       </div>
 
+      {showInstallCoachmark ? <IosInstallCoachmark onDismiss={() => dismissIosInstallCoachmark()} /> : null}
+
       {modal?.kind === "person" ? (
         <PersonForm
           person={modal.personId ? state.people.find((person) => person.id === modal.personId) : undefined}
@@ -483,6 +487,64 @@ function App() {
 
       {toast ? <div className="toast">{toast.text}</div> : null}
     </div>
+  );
+}
+
+function isStandaloneDisplay() {
+  return window.matchMedia("(display-mode: standalone)").matches || Boolean((window.navigator as Navigator & { standalone?: boolean }).standalone);
+}
+
+function isIosDevice() {
+  return /iphone|ipad|ipod/i.test(window.navigator.userAgent) || (window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
+}
+
+function useIosInstallCoachmark() {
+  const [shouldShow, setShouldShow] = useState(false);
+
+  useEffect(() => {
+    const dismissed = window.localStorage.getItem("keeper-ios-install-dismissed") === "true";
+    setShouldShow(isIosDevice() && !isStandaloneDisplay() && !dismissed);
+
+    const media = window.matchMedia("(display-mode: standalone)");
+    const update = () => setShouldShow(isIosDevice() && !isStandaloneDisplay() && !dismissed);
+    media.addEventListener?.("change", update);
+    return () => media.removeEventListener?.("change", update);
+  }, []);
+
+  return shouldShow;
+}
+
+function dismissIosInstallCoachmark() {
+  window.localStorage.setItem("keeper-ios-install-dismissed", "true");
+  window.dispatchEvent(new Event("keeper-dismiss-install"));
+}
+
+function IosInstallCoachmark({ onDismiss }: { onDismiss: () => void }) {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const handler = () => setIsVisible(false);
+    window.addEventListener("keeper-dismiss-install", handler);
+    return () => window.removeEventListener("keeper-dismiss-install", handler);
+  }, []);
+
+  if (!isVisible) {
+    return null;
+  }
+
+  return (
+    <aside className="install-coachmark" aria-label="Install Keeper">
+      <div className="install-icon">
+        <Share size={19} />
+      </div>
+      <div>
+        <strong>Install Keeper</strong>
+        <p>Tap Share, choose Add to Home Screen, then open Keeper from the new icon for full-screen mode.</p>
+      </div>
+      <button type="button" onClick={onDismiss} aria-label="Dismiss install tip">
+        <X size={18} />
+      </button>
+    </aside>
   );
 }
 
